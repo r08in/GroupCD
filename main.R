@@ -1,8 +1,9 @@
 ##This is a test
-n=10
-p=20
-pNum=5
+n=2
+p=4
+pNum=2
 
+data=GenerateData(n,p,pNum,dataSetNum=2)
 
-GenerateData(n,p,pNum,x,y,beta)
-
+out=CombineMultiLm(data$x,data$y)
+std <- .Call("GroupStandardize", out$x)

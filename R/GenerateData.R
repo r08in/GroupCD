@@ -1,9 +1,9 @@
 #Generate random data from mvn for linear model
 
-GenerateData = function (n,p,pNum,x,y,beta,dataSetNum=1,r=0.5,errorSigma=0.01)
+GenerateData = function (n,p,pNum,dataSetNum=1,r=0.5,errorSigma=0.01)
 {
   #for test
-  set.seed(120)
+  #set.seed(120)
   
   #check data
   if(n<=0||p<=0||pNum<=0)
@@ -45,7 +45,8 @@ GenerateData = function (n,p,pNum,x,y,beta,dataSetNum=1,r=0.5,errorSigma=0.01)
   tempy=array(0,dim=c(dataSetNum,n))
   for(j in 1:dataSetNum)
   {
-    error=rnorm(n,0,errorSigma)
+    #error=rnorm(n,0,errorSigma)
+    error=rep(0,n)
     tempy[j,]=tempx[j,,]%*%tempBeta[j,]+error
   }
   
@@ -61,5 +62,7 @@ GenerateData = function (n,p,pNum,x,y,beta,dataSetNum=1,r=0.5,errorSigma=0.01)
     beta=tempBeta
     y=tempy
   }
+  
+  list(x=x,y=y,beta=beta)
   
 }
