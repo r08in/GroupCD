@@ -103,7 +103,7 @@ SEXP GCDReg(SEXP X_, SEXP Y_, SEXP GroupInfo_, SEXP Penalty_,
   {
     iter[i]=0;
   }
-  for(int j=0;j<p;j++)
+  for(int j=0;j<p;j++) //initial z
   {
     begin=end+1;
     end+=groupInfo[j];
@@ -171,7 +171,7 @@ SEXP GCDReg(SEXP X_, SEXP Y_, SEXP GroupInfo_, SEXP Penalty_,
        
       }
        // Check for convergence
-       if(IsConvergent)
+       if(IsConvergent(betaShift,m,delta))
        {
          //update betaPre for next iteration
          for(int i=0;i<m;i++)
@@ -182,6 +182,7 @@ SEXP GCDReg(SEXP X_, SEXP Y_, SEXP GroupInfo_, SEXP Penalty_,
        }
        
     }
+    loss[l]=gLoss(r,n);
   }
   
   //clean and return result

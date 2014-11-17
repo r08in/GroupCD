@@ -1,6 +1,6 @@
 ## This functionn is to perform group coordinate descent regression
 
-gcdreg=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lamda,nlamda=100,delta,maxInter=1000,...)
+gcdreg=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lamda,nlamda=100,delta,maxIter=1000,...)
 {
   ##error checking
   if (class(X) != "matrix") 
@@ -46,8 +46,24 @@ gcdreg=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lamda,nla
   }
   
   ##Fit
+  res <- .Call("GCDReg", XX, yy,groupInfo,penalty,gamma,lamda, delta,maxIter)
+  b<-matrix(res[[1]],m,nLambda)
+  loss<-res[[2]]
+  iter<-res[[3]]
   
   ##unstandardize
+  beta<-matrix(0,m,nLambda)
+  beta<-b*scale
   
   ##output
+  val <- structure(list(beta = beta,
+                        iter = iter,
+                        lambda = lambda,
+                        gamma=gamma,
+                        penalty = penalty,
+                        loss = loss,
+                        groupInfo=groupInfo,
+                        n = n),
+                   class = "ncvreg")
+  val
 }
