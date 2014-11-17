@@ -6,7 +6,7 @@
 #include <R_ext/Applic.h>
 #define false 0
 #define true 1
-typedef int bool; // or #define bool int
+typedef int bool; 
 
 //check the first collumn of x for interception 
 bool HasIntercept(double *x,int n)
