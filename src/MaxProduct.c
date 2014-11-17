@@ -10,7 +10,7 @@
 
 
 //calculate the value of ||Xj'Y/n||
-double CrossProduct(double *x, double *y,int begin,int end, int n)
+double* CrossProduct(double *x, double *y,int begin,int end, int n)
 {
   //error checking
   if(end<begin)
@@ -18,29 +18,33 @@ double CrossProduct(double *x, double *y,int begin,int end, int n)
     printf("inside CrossProduct: end should not be smaller than begin!\n");
     abort();
   }
-  
-  SEXP val_;
-  PROTECT(val_ = allocVector(REALSXP, end-begin+1));
-  double *val=REAL(val_);
-  double sumSq=0;
+  double * val=Calloc(end-begin+1, double);
   
   for(int j=begin;j<=end;j++)
   {
-    val[j]=0;
+    val[j-begin]=0;
     for(int i=0;i<n;i++)
     {
-      val[j]+=x[j*n+i]*y[i];
+      val[j-begin]+=x[j*n+i]*y[i];
     }
-    val[j]=val[j]/n;
-    sumSq+=val[j]*val[j];
-   // printf("J:%d; val:%f",j,val[j]);
-  }
-  sumSq=sqrt(sumSq);
-  UNPROTECT(1);
-  
-  return sumSq;
+    val[j-begin]=val[j-begin]/n;
+    //printf(" j:%d, val:%f\n",j,val[j]);
+  }  
+  return val;
 }
 
+double CrossProductL2Norm(double *x, double *y,int begin,int end, int n)
+{
+  double * val=CrossProduct(x,y,begin,end,n);
+  double sumSq=0;
+  for(int i=0;i<end-begin+1;i++)
+  {
+    sumSq+=val[i]*val[i];
+  }
+  sumSq=sqrt(sumSq);
+  printf(" begin:%d, end:%d, sumsq:%f\n",begin,end,sumSq);
+  return sumSq;
+}
 //find the max ||Xj'Y/n|| for max lamda
 SEXP MaxProduct(SEXP x_, SEXP y_, SEXP groupInfo_)
 {
@@ -59,7 +63,7 @@ SEXP MaxProduct(SEXP x_, SEXP y_, SEXP groupInfo_)
   {
     begin=end+1;
     end+=groupInfo[j];
-    val= CrossProduct(x,y,begin,end,n);
+    val= CrossProductL2Norm(x,y,begin,end,n);
     if(maxVal<val)
     {
       maxVal=val;

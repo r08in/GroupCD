@@ -36,6 +36,14 @@ gcdreg=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lamda,nla
 
   
   ##setup parameter
+  if (missing(lambda)) 
+  {
+    lambda <- SetupParameter(XX, yy, groupInfo,nlamda)
+  } 
+  else 
+  {
+    nlambda <- length(lambda)
+  }
   
   ##Fit
   
