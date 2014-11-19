@@ -15,7 +15,7 @@ double L2Norm(double *z, int begin,int end)
   {
     val+=z[i]*z[i];
   }
-  return val;
+  return sqrt(val);
 }
 
 double * McPGroup(double *z, int begin,int end,double lamda,double gamma)
@@ -33,7 +33,8 @@ double * McPGroup(double *z, int begin,int end,double lamda,double gamma)
   double znorm=L2Norm(z,begin,end);
   double lamda2=multiplier*lamda;
   
-  
+  printf("inside mcp: znorm:%f, lamda2:%f, lambda2gama:%f \n",znorm,lamda2,lamda2*gamma);
+ // char c=getchar();
   if(znorm<=lamda2)// set all to zero
   {
     for(int i=0;i<size;i++)

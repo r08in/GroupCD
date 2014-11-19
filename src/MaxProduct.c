@@ -64,6 +64,7 @@ SEXP MaxProduct(SEXP x_, SEXP y_, SEXP groupInfo_)
     begin=end+1;
     end+=groupInfo[j];
     val= CrossProductL2Norm(x,y,begin,end,n);
+    printf("inside maxproduct: j:%d val:%f\n",j,val);
     if(maxVal<val)
     {
       maxVal=val;
