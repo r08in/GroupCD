@@ -9,7 +9,7 @@ CombineMultiLm=function(x,y)
     stop("The dimension of multi-observations y should be 2.")
   if(dim(x)[1]<=1)
     stop("The number of dataset should greater than 1.")
-  if(dim(x)[1]!=dim(y)[1]||dim(x)[2]!=dim(y))
+  if(dim(x)[1]!=dim(y)[1]||dim(x)[2]!=dim(y)[2])
     stop("The dimensions of x and y are not matched. ")
   
   m=dim(x)[1]

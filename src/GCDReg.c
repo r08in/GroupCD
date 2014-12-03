@@ -139,7 +139,7 @@ SEXP GCDReg(SEXP X_, SEXP Y_, SEXP GroupInfo_, SEXP Penalty_,
         end+=groupInfo[j];
         
         //(1)calculate z j group
-        tempz=CrossProduct(x,y,begin,end,n);
+        tempz=CrossProduct(x,r,begin,end,n);
         for(int i=begin;i<=end;i++)
         {
           z[i]=tempz[i-begin]+betaPre[i];
@@ -148,7 +148,7 @@ SEXP GCDReg(SEXP X_, SEXP Y_, SEXP GroupInfo_, SEXP Penalty_,
         //(2)update beta j group
         if (strcmp(penalty,"MCP")==0)
         {
-          tempb=McPGroup(z,begin,end,lamda[l],gamma,groupInfo[j]);
+          tempb=McPGroup(z,begin,end,lamda[l],gamma);
           printf("inside MCP:\n");
           for(int i=begin;i<=end;i++)
           {

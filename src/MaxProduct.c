@@ -40,6 +40,7 @@ double CrossProductL2Norm(double *x, double *y,int begin,int end, int n)
   for(int i=0;i<end-begin+1;i++)
   {
     sumSq+=val[i]*val[i];
+    printf("val:%f\n",val[i]);
   }
   sumSq=sqrt(sumSq);
   printf(" begin:%d, end:%d, sumsq:%f\n",begin,end,sumSq);
