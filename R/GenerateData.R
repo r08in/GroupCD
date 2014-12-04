@@ -3,7 +3,7 @@
 GenerateData = function (n,p,pNum,dataSetNum=1,r=0.5,errorSigma=0.01)
 {
   #for test
-  #set.seed(120)
+  set.seed(120)
   
   #check data
   if(n<=0||p<=0||pNum<=0)

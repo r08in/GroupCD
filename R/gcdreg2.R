@@ -44,14 +44,16 @@ gcdreg2=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lambda,n
     lambda <- SetupParameter(XX, yy, groupInfo,nlambda)
   } 
   else 
-  {
+  {o
     nlambda <- length(lambda)
   }
   
   ##Fit
-  res <- .Call("GCDReg", XX, yy,groupInfo,penalty,gamma,lambda, delta,maxIter)
-  res2=GCDReg2(XX, yy,groupInfo,penalty,gamma,lambda, delta,maxIter)
   
+  # cfunction
+  #res <- .Call("GCDReg", XX, yy,groupInfo,penalty,gamma,lambda, delta,maxIter) 
+  #beta1=matrix(res[[1]],nrow=nlambda,ncol=dim(XX)[2],byrow=TRUE)  
+  res=GCDReg2(XX, yy,groupInfo,penalty,gamma,lambda, delta,maxIter)
   m<-ncol(XX)
   b<-matrix(res[[1]],nlambda,m,byrow=TRUE)
   loss<-res[[2]]
@@ -70,6 +72,6 @@ gcdreg2=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lambda,n
                         loss = loss,
                         groupInfo=groupInfo,
                         n = n),
-                   class = "ncvreg")
+                   class = "gcdreg")
   val
 }

@@ -23,7 +23,7 @@ bool IsConvergent (double * shift, int size,double delta)
   {
     sumSq+=shift[i]*shift[i];
   }
-  printf("inside IsConvergent: delta is:%f\n",sumSq);
+ // printf("inside IsConvergent: delta is:%f\n",sumSq);
   if(sumSq<delta)
   {
     return true;
@@ -103,7 +103,7 @@ SEXP GCDReg(SEXP X_, SEXP Y_, SEXP GroupInfo_, SEXP Penalty_,
   {
     iter[i]=0;
   }
-  printf("inside gcdreg: initial z\n");
+ // printf("inside gcdreg: initial z\n");
   for(int j=0;j<p;j++) //initial z
   {
     begin=end+1;
@@ -114,19 +114,22 @@ SEXP GCDReg(SEXP X_, SEXP Y_, SEXP GroupInfo_, SEXP Penalty_,
       z[i]=tempz[i-begin];
     }
   }
-  int lstart=1;//since lamda[0] will give all beta 0;
+  int lstart=0;//since lamda[0] will give all beta 0;
   
   //iteration for each lamda
-  printf("inside gcdreg: iteration for each lamda\n");
+  //printf("inside gcdreg: iteration for each lamda\n");
   for(int l=lstart;l<L;l++)
   {
-    for(int i=0;i<m;i++) //assign previous beta to betaPre
+    if(l!=0)
     {
-      betaPre[i]=beta[(l-1)*m+i];
+      for(int i=0;i<m;i++) //assign previous beta to betaPre
+      {
+        betaPre[i]=beta[(l-1)*m+i];
+      }
     }
     
      //iteration for all covariates
-     printf("inside gcdreg: iteration for all covariates\n");
+    // printf("inside gcdreg: iteration for all covariates\n");
     while(iter[l]<maxIter)
     {
       iter[l]++;     
@@ -144,18 +147,17 @@ SEXP GCDReg(SEXP X_, SEXP Y_, SEXP GroupInfo_, SEXP Penalty_,
         {
           z[i]=tempz[i-begin]+betaPre[i];
         }
-        
+               
         //(2)update beta j group
         if (strcmp(penalty,"MCP")==0)
         {
           tempb=McPGroup(z,begin,end,lamda[l],gamma);
-          printf("inside MCP:\n");
+         // printf("inside MCP:\n");
           for(int i=begin;i<=end;i++)
           {
             beta[l*m+i]=tempb[i-begin];
-            printf(",%f",tempb[i-begin]);
+           // printf(",%f",tempb[i-begin]);
           }
-          printf("\n");
         }
         
         //(3)update r
@@ -176,14 +178,46 @@ SEXP GCDReg(SEXP X_, SEXP Y_, SEXP GroupInfo_, SEXP Penalty_,
       
        
       }
-       // Check for convergence
-       if(IsConvergent(betaShift,m,delta))
-       {
-         //update betaPre for next iteration
+      //update betaPre for next iteration
          for(int i=0;i<m;i++)
          {
            betaPre[i]=beta[l*m+i];
+          
          }
+         
+          
+         //out put for test
+         /*
+         printf("iter(%d):%f\n",l,iter[l]);
+         
+         printf("beta:\n");
+          for(int i=0;i<m;i++)
+         {
+           printf("%f ",betaPre[i]);
+          
+         }         
+         printf("\n");
+         
+         printf("z:\n");
+          for(int i=0;i<m;i++)
+         {
+           printf("%f ",z[i]);
+          
+         }         
+         printf("\n");
+         
+         printf("r:\n");
+          for(int i=0;i<n;i++)
+         {
+           printf("%f ",r[i]);
+          
+         }         
+         printf("\n");*/
+         
+       // Check for convergence
+       if(IsConvergent(betaShift,m,delta))
+       {
+         
          break;
        }
        

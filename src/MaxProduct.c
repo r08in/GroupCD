@@ -40,10 +40,10 @@ double CrossProductL2Norm(double *x, double *y,int begin,int end, int n)
   for(int i=0;i<end-begin+1;i++)
   {
     sumSq+=val[i]*val[i];
-    printf("val:%f\n",val[i]);
+    //printf("val:%f\n",val[i]);
   }
   sumSq=sqrt(sumSq);
-  printf(" begin:%d, end:%d, sumsq:%f\n",begin,end,sumSq);
+  //printf(" begin:%d, end:%d, sumsq:%f\n",begin,end,sumSq);
   return sumSq;
 }
 //find the max ||Xj'Y/n|| for max lamda
@@ -65,7 +65,7 @@ SEXP MaxProduct(SEXP x_, SEXP y_, SEXP groupInfo_)
     begin=end+1;
     end+=groupInfo[j];
     val= CrossProductL2Norm(x,y,begin,end,n);
-    printf("inside maxproduct: j:%d val:%f\n",j,val);
+    //printf("inside maxproduct: j:%d val:%f\n",j,val);
     if(maxVal<val)
     {
       maxVal=val;

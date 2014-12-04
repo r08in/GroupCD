@@ -33,7 +33,7 @@ double * McPGroup(double *z, int begin,int end,double lamda,double gamma)
   double znorm=L2Norm(z,begin,end);
   double lamda2=multiplier*lamda;
   
-  printf("inside mcp: znorm:%f, lamda2:%f, lambda2gama:%f \n",znorm,lamda2,lamda2*gamma);
+ // printf("inside mcp: znorm:%f, lamda2:%f, lambda2gama:%f \n",znorm,lamda2,lamda2*gamma);
  // char c=getchar();
   if(znorm<=lamda2)// set all to zero
   {

@@ -65,6 +65,6 @@ gcdreg=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lambda,nl
                         loss = loss,
                         groupInfo=groupInfo,
                         n = n),
-                   class = "ncvreg")
+                   class = "gcdreg")
   val
 }

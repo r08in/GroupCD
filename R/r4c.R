@@ -72,7 +72,7 @@ GCDReg2=function(x, y, groupInfo, penalty,gamma, lamda, delta, maxIter)
   L=length(lamda)
   begin=0
   end=0
-  lstart=2 ##since lamda[1] will give all beta 0
+  lstart=1 ##since lamda[1] will give all beta 0
   
   ##reslut to be returned
   beta=matrix(ncol=m,nrow=L,0)
@@ -104,7 +104,10 @@ GCDReg2=function(x, y, groupInfo, penalty,gamma, lamda, delta, maxIter)
 ##iteration for each lamda
 for(l in lstart:L)
 {  
-  betaPre=beta[l-1,] ##assign previous beta to betaPre
+  if(l>=2)
+  {
+    betaPre=beta[l-1,] ##assign previous beta to betaPre
+  }
 
 ##iteration for all covariates
 while(iter[l]<maxIter)
@@ -133,14 +136,13 @@ while(iter[l]<maxIter)
     }
     
     ##(3)update r
-    tempSum=0
     betaShift[begin:end]=beta[l,begin:end]-betaPre[begin:end]
     r=r-x[,begin:end]%*%betaShift[begin:end]  
     
   }
   
   ##update betaPre for next iteration
-  betaPre[i]=beta[l,]
+  betaPre=beta[l,]
   
   ## Check for convergence
   if(t(betaShift)%*%betaShift<delta)
