@@ -55,9 +55,10 @@ gcdreg2=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lambda,n
   #beta1=matrix(res[[1]],nrow=nlambda,ncol=dim(XX)[2],byrow=TRUE)  
   res=GCDReg2(XX, yy,groupInfo,penalty,gamma,lambda, delta,maxIter)
   m<-ncol(XX)
-  b<-matrix(res[[1]],nlambda,m,byrow=TRUE)
+  b<-matrix(res[[1]],nlambda,m,byrow=FALSE)
   loss<-res[[2]]
   iter<-res[[3]]
+  n<-length(yy)
   
   ##unstandardize
   beta<-matrix(0,m,nlambda)

@@ -99,7 +99,7 @@ GCDReg2=function(x, y, groupInfo, penalty,gamma, lamda, delta, maxIter)
   }
 }
 
-
+  loss[1]=t(y)%*%y ##initial loss[1]
 
 ##iteration for each lamda
 for(l in lstart:L)
