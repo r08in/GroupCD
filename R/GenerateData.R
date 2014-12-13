@@ -1,9 +1,9 @@
 #Generate random data from mvn for linear model
 
-GenerateData = function (n,p,pNum,dataSetNum=1,r=0.5,errorSigma=0.01)
+GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=0.001,offSet=0)
 {
   #for test
-  set.seed(120)
+  #set.seed(120)
   
   #check data
   if(n<=0||p<=0||pNum<=0)
@@ -12,7 +12,6 @@ GenerateData = function (n,p,pNum,dataSetNum=1,r=0.5,errorSigma=0.01)
     stop("p cannot be smaller than pNum.")  
   if(dataSetNum<=0)
     stop("dataSetNum should be positive integer.")
-  
   ##generate design matrix x 
   #normal parameter for design matrix
   mu = rep(0,p)
@@ -36,17 +35,27 @@ GenerateData = function (n,p,pNum,dataSetNum=1,r=0.5,errorSigma=0.01)
   
   #generate beta  
   tempBeta=array(0,dim=c(dataSetNum,p))
+  if(length(offSet)!=dataSetNum)
+  {
+    offSet=rep(0,dataSetNum)
+  }
   for(j in 1:dataSetNum)
   {
-    tempBeta[j,] =c(rep(1,pNum),rep(0,p-pNum))
+    tempBeta[j,] =c(rep(0,offSet[j]),rep(1,pNum),rep(0,p-offSet[j]-pNum))
   }
   
   #generate observation y
   tempy=array(0,dim=c(dataSetNum,n))
   for(j in 1:dataSetNum)
   {
-    #error=rnorm(n,0,errorSigma)
-    error=rep(0,n)
+    if(errorSigma==0)
+    {
+      error=rep(0,n);
+    }
+    else
+    {
+      error=rnorm(n,0,errorSigma);
+    }
     tempy[j,]=tempx[j,,]%*%tempBeta[j,]+error
   }
   

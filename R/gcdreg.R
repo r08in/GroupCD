@@ -47,6 +47,7 @@ gcdreg=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lambda,nl
   
   ##Fit
   res <- .Call("GCDReg", XX, yy,groupInfo,penalty,gamma,lambda, delta,maxIter)
+  ## res2=GCDReg2(XX, yy,groupInfo,penalty,gamma,lambda, delta,maxIter)
   m<-ncol(XX)
   b<-matrix(res[[1]],nlambda,m,byrow=TRUE)
   loss<-res[[2]]
