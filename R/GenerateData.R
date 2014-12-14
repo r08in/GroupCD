@@ -75,3 +75,13 @@ GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=0.001,offSet=0)
   list(x=x,y=y,beta=beta)
   
 }
+
+GenerateGroupData=function(groupSize,groupNum,validGroupNum,dataSize,offSet=0)
+{
+  n=dataSize
+  p=groupNum
+  pNum=validGroupNum
+  dataSetNum=groupSize
+  data=GenerateData(n,p,pNum,dataSetNum,errorSigma=0.001,offSet=rep(offSet,dataSetNum))
+  out=CombineMultiLm(data$x,data$y)
+}

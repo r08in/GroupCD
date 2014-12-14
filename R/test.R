@@ -42,3 +42,25 @@ TestRate=function(t)
   list(rate=(sum/t),res=res)
   
 }
+
+GenerateBindedGroupData=function(m,groupSize,groupNum,validGroupNumList,dataSizeList,offSet=0)
+{ 
+  
+  ##generate group data for each data set
+  XX=matrix(0,0,groupSize*groupNum)
+  YY=NULL
+  if(length(offSet)!=m)
+  {
+    offSet=rep(0,m)
+  }
+  for(i in 1:m)
+  {
+    #generate group data 8,200,20,31
+    out=GenerateGroupData(groupSize,groupNum,validGroupNumList[i],dataSizeList[i],offSet=offSet[i])
+    XX=rbind(XX,out$x)
+    YY=c(YY,out$y)
+  }
+  
+  #combine each dataSet
+  CombineDataset(XX,dataSizeList*groupSize,rep(groupSize,groupNum),YY)
+}

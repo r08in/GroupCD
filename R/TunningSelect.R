@@ -27,7 +27,7 @@ BICSelect2=function(rss,n,betas,lambdas)
       BicPre=BicTemp
     }
   }
-  
+  res=data.frame(lambda=res[,1],BIC=res[,2],df=res[,3])
   list(lambda=lambdas[indexSelected],beta=betas[indexSelected,],rss=rss[indexSelected],
        df=sum(betas[indexSelected,]!=0),index=indexSelected,res=res)
 }

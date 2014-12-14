@@ -37,3 +37,40 @@ CombineMultiLm=function(x,y)
   
   list(x=tempx,y=tempy)
 }
+
+
+CombineDataset=function(XX,xinfo,pinfo,YY)
+{
+  ##checking data
+  
+  ##combine x
+  m=length(xinfo)
+  p=length(pinfo)
+  colStart=1
+  X=NULL
+  for(j in 1:p) #for each Xj
+  {    
+    colSum=pinfo[j]*m
+    Xj=matrix(0,0,colSum)
+    leftColNum=0
+    rowStart=1
+    
+    for(i in 1:m) #for combine each xj in dataset i
+    {
+      tempx=cbind(matrix(0,xinfo[i],leftColNum),
+                  XX[rowStart:(rowStart+xinfo[i]-1),colStart:(colStart+pinfo[j]-1)],
+                  matrix(0,xinfo[i],colSum-leftColNum-pinfo[j]))
+      Xj=rbind(Xj,tempx)
+      leftColNum=leftColNum+pinfo[j]
+      rowStart=rowStart+xinfo[i]
+    }
+    colStart=colStart+pinfo[j]
+    X=cbind(X,Xj)
+  }
+  
+  ##combine y(assume YY has been combine)
+  
+  ##return list
+  list(x=X,y=YY)
+}
+
