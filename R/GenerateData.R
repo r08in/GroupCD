@@ -3,7 +3,7 @@
 GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=1,offSet=0)
 {
   #for test
-  set.seed(120)
+  #set.seed(120)
   
   #check data
   if(n<=0||p<=0||pNum<=0)
@@ -23,8 +23,10 @@ GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=1,offSet=0)
       sigma[i,j]=r^abs(i-j)   
     }
   tempx=array(0,dim=c(dataSetNum,n,p))
-  
-  xx=mvrnorm(n,mu,sigma)
+  for(j in 1:dataSetNum)
+  {
+    tempx[j,,]=mvrnorm(n,mu,sigma)
+  }
   
   
   #generate beta  
@@ -35,7 +37,7 @@ GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=1,offSet=0)
   }
   for(j in 1:dataSetNum)
   {
-    tempBeta[j,] =c(rep(0,offSet[j]),rep(1,pNum),rep(0,p-offSet[j]-pNum))
+    tempBeta[j,] =c(rep(0,offSet[j]),rep(5,pNum),rep(0,p-offSet[j]-pNum))
   }
   
   #generate observation y
