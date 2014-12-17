@@ -1,6 +1,6 @@
 #Generate random data from mvn for linear model
 
-GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=0.001,offSet=0)
+GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=1,offSet=0)
 {
   #for test
   set.seed(120)
@@ -23,14 +23,8 @@ GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=0.001,offSet=0)
       sigma[i,j]=r^abs(i-j)   
     }
   tempx=array(0,dim=c(dataSetNum,n,p))
-  for(j in 1:dataSetNum)
-  {     
-    for(i in 1:n)
-    {
-      xx[i,]=rnorm(p,mu,sigma)
-    }    
-    tempx[j,,]=xx
-  }
+  
+  xx=mvrnorm(n,mu,sigma)
   
   
   #generate beta  

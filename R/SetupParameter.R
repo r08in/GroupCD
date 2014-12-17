@@ -1,9 +1,8 @@
 SetupParameter = function(X, y,groupInfo,nlamda,multiplier=1) 
 {
    lamdaMax=(.Call("MaxProduct", X, y, groupInfo)/sqrt(min(groupInfo)))  
-   # lamdaMin=1e-5
+   #lamdaMin=1e-5
    #lamda=seq(lamdaMax,lamdaMin,length.out=nlamda)
-   #lamda=c(lamda,0)
   
   lamda=lamdaMax
   xmin=log(1)
@@ -13,7 +12,7 @@ SetupParameter = function(X, y,groupInfo,nlamda,multiplier=1)
     lamdaTemp=lamdaMax/(xmax-xmin)*(xmax-log(i))
     lamda=c(lamda,lamdaTemp)
   }
-  lamda
+  lamda 
   
   
 }

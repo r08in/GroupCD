@@ -44,7 +44,7 @@ gcdreg2=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lambda,n
     lambda <- SetupParameter(XX, yy, groupInfo,nlambda)
   } 
   else 
-  {o
+  {
     nlambda <- length(lambda)
   }
   

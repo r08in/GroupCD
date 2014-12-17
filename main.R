@@ -1,17 +1,22 @@
 ##This is a test  
-n=30 
-p=260
-pNum=15
-dataSetNum=10
+library("MASS") #try to use onevent later
+n=40 
+p=200 
+pNum=5
+dataSetNum=5
+nlambda=300
 groupInfo=rep(dataSetNum,p)
-data=GenerateData(n,p,pNum,dataSetNum,errorSigma=0.001)
+data=GenerateData(n,p,pNum,dataSetNum,errorSigma=1)
 out=CombineMultiLm(data$x,data$y)
 res=gcdreg(out$x,out$y,groupInfo,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
-final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=0.9)
-final2=GreedySelect(res$beta,res$lambda,inv=0.95)
-plot(final$res$lambda[10:(nlambda-10)],final$res$BIC[10:(nlambda-10)],main='BIC-lambda')
+#res=gcdreg2(out$x,out$y,groupInfo,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
+final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=1)
+#final2=GreedySelect(res$beta,res$lambda,inv=0.95)
+start=1
+end=nlambda-5
+plot(final$res$lambda[start:end],final$res$BIC[start:end],main='BIC-lambda')
 x11()
-plot(final$res$lambda[10:(nlambda-10)],final$res$df[10:(nlambda-10)],main='df-bambda')
+plot(final$res$lambda[start:end],final$res$df[start:end],main='df-bambda')
 betas=res$beta
 beta=final$beta
 (beta!=0)+0
@@ -28,6 +33,10 @@ pNum=as.double(sample(30:40,1))
 dataSetNum=as.double(sample(5:10,1))
 
 ##setting for test(good)
+n=30 
+p=260
+pNum=15
+dataSetNum=10
 
 n=30 
 p=260

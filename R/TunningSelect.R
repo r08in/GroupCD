@@ -23,7 +23,7 @@ BICSelect2=function(rss,n,betas,lambdas,inv=1)
     res[i,1]=lambdas[i]
     res[i,2]=BicTemp
     res[i,3]=df
-    if(i>=start&&i<=end&&BicTemp<BicPre)
+    if(i>=start&&i<=end&&BicTemp<=BicPre)
     {
       indexSelected=i
       BicPre=BicTemp
