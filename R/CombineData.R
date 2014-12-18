@@ -1,4 +1,5 @@
 ## This function is to combine linear model from each dataset
+## To form a group linear model
 
 CombineMultiLm=function(x,y)
 {
@@ -39,7 +40,9 @@ CombineMultiLm=function(x,y)
 }
 
 
-##This function is to combine multi
+##This function is to combine multiple dataset
+##each dataset is already in a group linear model
+
 CombineDataset=function(XX,xinfo,pinfo,YY)
 {
   ##checking data
@@ -74,4 +77,5 @@ CombineDataset=function(XX,xinfo,pinfo,YY)
   ##return list
   list(x=X,y=YY)
 }
+
 

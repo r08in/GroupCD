@@ -26,8 +26,7 @@ gcdreg=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lambda,nl
     stop("Missing data (NA's) detected.Take actions to eliminate missing data before passing X and y to gcdreg.")
   
   ##group standardize
-  std <-GroupStandardize2(x,y)
-  #std <- .Call("GroupStandardize", x,y)
+  std <- .Call("GroupStandardize", x,y)
   XX <- std[[1]]
   yy <- std[[2]]
   scale <- std[[3]]  

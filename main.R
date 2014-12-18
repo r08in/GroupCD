@@ -1,19 +1,19 @@
 ##This is a test  
 library("MASS") #try to use onevent later
-n=40 
-p=200 
+n=41 
+p=282  
 pNum=5
-dataSetNum=5
+dataSetNum=6
 nlambda=300
 groupInfo=rep(dataSetNum,p)
 data=GenerateData(n,p,pNum,dataSetNum,errorSigma=1)
 out=CombineMultiLm(data$x,data$y)
 res=gcdreg(out$x,out$y,groupInfo,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
 #res=gcdreg2(out$x,out$y,groupInfo,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
-final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=1)
+final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=0.9)
 #final2=GreedySelect(res$beta,res$lambda,inv=0.95)
 start=1
-end=nlambda-5
+end=nlambda-15
 plot(final$res$lambda[start:end],final$res$BIC[start:end],main='BIC-lambda')
 x11()
 plot(final$res$lambda[start:end],final$res$df[start:end],main='df-bambda')
@@ -90,12 +90,6 @@ betas=res$beta
 beta=final$beta
 (beta!=0)+0
 (betas[nlambda-100,]!=0)+0
-m=4
-groupSize=5
-groupNum=180 #num of the group 
-validGroupNumList=rep(5,m) #the valid group start from col 1
-dataSizeList=rep(20,m) # the actual num for each dataset would be obtain by multiplier groupsize
-out=GenerateBindedGroupData(m,groupSize,groupNum,validGroupNumList,dataSizeList)
 
 
 
@@ -147,4 +141,30 @@ pNum=39
 dataSetNum=7
 outPut=IsSuccess(n,p,pNum,dataSetNum)
 
+#test3
+#function(sizeInfo,groupInfo,validGroupNumInfo,offSet=0)
+m=2
+p=3
+sizeInfo=rep(4,m)
+groupInfo=rep(2,p)
+validGroupNumInfo=rep(1,m)
+
+GenerateDummyModel(sizeInfo,groupInfo,validGroupNumInfo,offSet=c(0,1))
+
+##########################
+m=4
+p=60
+sizeInfo=rep(50,4)
+groupInfo=rep(3,p)
+validGroupNumInfo=rep(5,m)
+out=GenerateDummyModel(sizeInfo,groupInfo,validGroupNumInfo,errorSigma=0.5)
+nlambda=300
+res=gcdreg(out$x,out$y,groupInfo,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
+final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=0.9)
+plot(final$res$lambda[10:(nlambda-10)],final$res$BIC[10:(nlambda-10)],main='BIC-lambda')
+x11()
+plot(final$res$lambda[10:(nlambda-10)],final$res$df[10:(nlambda-10)],main='df-bambda')
+betas=res$beta
+beta=final$beta
+(beta!=0)+0
 

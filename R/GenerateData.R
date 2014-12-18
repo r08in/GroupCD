@@ -1,5 +1,5 @@
-#Generate random data from mvn for linear model
-
+##Generate random data from mvn for linear model
+#Generate multi-dataset. each one is in linear model
 GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=1,offSet=0)
 {
   #for test
@@ -72,6 +72,7 @@ GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=1,offSet=0)
   
 }
 
+## Generate group data
 GenerateGroupData=function(groupSize,groupNum,validGroupNum,dataSize,offSet=0)
 {
   n=dataSize
@@ -80,4 +81,86 @@ GenerateGroupData=function(groupSize,groupNum,validGroupNum,dataSize,offSet=0)
   dataSetNum=groupSize
   data=GenerateData(n,p,pNum,dataSetNum,errorSigma=0.001,offSet=rep(offSet,dataSetNum))
   out=CombineMultiLm(data$x,data$y)
+}
+
+
+##Generate linear model data
+##The design matrix is composed of dummy data
+GenerateDummyData=function(n,groupInfo,validGroupNum,errorSigma=1,offSet=0)
+{
+  #check data
+  p=length(groupInfo)
+  pNum=validGroupNum
+  if(p<pNum||pNum<=0)
+    stop("The number of valid group is illegal!")
+  if(offSet+pNum>p)
+    stop("The offSet is illegal!")
+  
+  #generate design matrix x
+  m=sum(groupInfo)
+  x=matrix(0,n,m)
+  left=0
+  for(j in 1:p)
+  {    
+    for(i in 1:n)
+    {
+      index=sample(0:groupInfo[j],1)
+      if(index==0) next
+      x[i,(left+index)]=1
+    }
+    left=left+groupInfo[j]
+  }
+
+  #generate beta
+  beta=rep(0,m)
+  if(offSet==0)
+  {
+    start=1
+    end=sum(groupInfo[1:pNum])
+  }
+  else
+  {
+    start=sum(groupInfo[1:offSet])+1
+    end=sum(groupInfo[1:(offSet+pNum)])
+  }
+  beta[start:end]=1
+  
+  #generate y
+  if(errorSigma==0)
+  {
+    error=rep(0,n)
+  }
+  else
+  {
+    error=rnorm(n,0,errorSigma)
+  }
+  y=x%*%beta+error
+  #return
+  list(x=x,y=y,beta=beta)
+}
+
+##Generate Dummy model
+GenerateDummyModel=function(sizeInfo,groupInfo,validGroupNumInfo,offSet=0,errorSigma)
+{
+  ##intial
+  m=length(sizeInfo) #dataset Num
+  p=sum(groupInfo)
+  
+  ##generate design matrix
+  X=matrix(0,0,p)
+  Y=NULL
+  if(length(offSet)!=m)
+  {
+    offSet=rep(0,m)
+  }
+  for(i in 1:m)
+  {
+    #generate group dummy data  GenerateDummyData=function(n,groupInfo,validGroupNum,errorSigma=1,offSet=0)
+    out=GenerateDummyData(sizeInfo[i],groupInfo,validGroupNumInfo[i],offSet=offSet[i],errorSigma=errorSigma)
+    X=rbind(X,out$x)
+    Y=c(Y,out$y)
+  }
+  
+  #combine each dataSet
+  CombineDataset(X,sizeInfo,groupInfo,Y)
 }
