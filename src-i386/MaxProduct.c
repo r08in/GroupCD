@@ -44,7 +44,6 @@ double CrossProductL2Norm(double *x, double *y,int begin,int end, int n)
   }
   sumSq=sqrt(sumSq);
   //printf(" begin:%d, end:%d, sumsq:%f\n",begin,end,sumSq);
-  Free(val);
   return sumSq;
 }
 //find the max ||Xj'Y/n|| for max lamda

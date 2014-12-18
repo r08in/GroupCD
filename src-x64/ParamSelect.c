@@ -78,7 +78,7 @@ SEXP BICSelect(SEXP Rss_, SEXP N_, SEXP Betas_, SEXP Lambdas_)
   SET_VECTOR_ELT(res_, 2,rss_ );
   SET_VECTOR_ELT(res_, 3,df_);
   SET_VECTOR_ELT(res_, 4,index_);
-  Free(df);
   UNPROTECT(6);
+  //Free(df);
   return res_;
 }

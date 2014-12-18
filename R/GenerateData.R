@@ -3,7 +3,7 @@
 GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=1,offSet=0)
 {
   #for test
-  #set.seed(120)
+  set.seed(120)
   
   #check data
   if(n<=0||p<=0||pNum<=0)
@@ -37,7 +37,7 @@ GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=1,offSet=0)
   }
   for(j in 1:dataSetNum)
   {
-    tempBeta[j,] =c(rep(0,offSet[j]),rep(5,pNum),rep(0,p-offSet[j]-pNum))
+    tempBeta[j,] =c(rep(0,offSet[j]),rep(2,pNum),rep(0,p-offSet[j]-pNum))
   }
   
   #generate observation y

@@ -1,10 +1,10 @@
 IsSuccess=function(n,p,pNum,dataSetNum)
 {
   groupInfo=rep(dataSetNum,p)
-  data=GenerateData(n,p,pNum,dataSetNum,r=0.9,errorSigma=0.001)
+  data=GenerateData(n,p,pNum,dataSetNum,errorSigma=1)
   out=CombineMultiLm(data$x,data$y)
-  res2=gcdreg(out$x,out$y,groupInfo,penalty="MCP",gamma=3,nlambda=1000,delta=0.000001,maxIter=1000)
-  final=BICSelect2(res2$loss,res2$n,res2$beta,res2$lambda,inv=0.9)
+  res2=gcdreg(out$x,out$y,groupInfo,penalty="MCP",gamma=3,nlambda=300,delta=0.000001,maxIter=1000)
+  final=BICSelect2(res2$loss,res2$n,res2$beta,res2$lambda,inv=1)
   #final=GreedySelect(res2$beta,res2$lambda,inv=0.95)
   ##plot(final$res[,1],final$res[,2])
   success=0
@@ -13,10 +13,7 @@ IsSuccess=function(n,p,pNum,dataSetNum)
     
     success=1
   }
-  else if(final$df==sum(final$beta[1:final$df]!=0))
-  {
-    success=final$df
-  }
+  
   success
 }
 
@@ -26,7 +23,7 @@ TestRate=function(t)
   res=matrix(0,t,5)
   for(i in 1:t)
   {
-    n=as.double(sample(30:60,01))
+    n=as.double(sample(30:60,1))
     p=as.double(sample(200:300,1))
     pNum=as.double(sample(10:20,1))
     dataSetNum=as.double(sample(5:10,1))

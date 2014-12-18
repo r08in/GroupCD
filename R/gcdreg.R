@@ -26,7 +26,8 @@ gcdreg=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lambda,nl
     stop("Missing data (NA's) detected.Take actions to eliminate missing data before passing X and y to gcdreg.")
   
   ##group standardize
-  std <- .Call("GroupStandardize", x,y)
+  std <-GroupStandardize2(x,y)
+  #std <- .Call("GroupStandardize", x,y)
   XX <- std[[1]]
   yy <- std[[2]]
   scale <- std[[3]]  
@@ -49,6 +50,7 @@ gcdreg=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lambda,nl
   res <- .Call("GCDReg", XX, yy,groupInfo,penalty,gamma,lambda, delta,maxIter)
   ## res2=GCDReg2(XX, yy,groupInfo,penalty,gamma,lambda, delta,maxIter)
   m<-ncol(XX)
+  n<-nrow(XX)
   b<-matrix(res[[1]],nlambda,m,byrow=TRUE)
   loss<-res[[2]]
   iter<-res[[3]]
@@ -56,7 +58,7 @@ gcdreg=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lambda,nl
   ##unstandardize
   beta<-matrix(0,m,nlambda)
   beta<-b*scale
-  
+ 
   ##output
   val <- structure(list(beta = beta,
                         iter = iter,

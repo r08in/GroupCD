@@ -39,6 +39,7 @@ CombineMultiLm=function(x,y)
 }
 
 
+##This function is to combine multi
 CombineDataset=function(XX,xinfo,pinfo,YY)
 {
   ##checking data

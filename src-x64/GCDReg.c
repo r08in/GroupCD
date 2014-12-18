@@ -113,7 +113,6 @@ SEXP GCDReg(SEXP X_, SEXP Y_, SEXP GroupInfo_, SEXP Penalty_,
     {
       z[i]=tempz[i-begin];
     }
-    Free(tempz);
   }
   int lstart=0;//since lamda[0] will give all beta 0;
   
@@ -148,7 +147,7 @@ SEXP GCDReg(SEXP X_, SEXP Y_, SEXP GroupInfo_, SEXP Penalty_,
         {
           z[i]=tempz[i-begin]+betaPre[i];
         }
-        Free(tempz);   
+               
         //(2)update beta j group
         if (strcmp(penalty,"MCP")==0)
         {
@@ -159,7 +158,6 @@ SEXP GCDReg(SEXP X_, SEXP Y_, SEXP GroupInfo_, SEXP Penalty_,
             beta[l*m+i]=tempb[i-begin];
            // printf(",%f",tempb[i-begin]);
           }
-          Free(tempb);
         }
         
         //(3)update r
