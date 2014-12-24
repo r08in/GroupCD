@@ -95,6 +95,8 @@ GenerateDummyData=function(n,groupInfo,validGroupNum,errorSigma=1,offSet=0)
     stop("The number of valid group is illegal!")
   if(offSet+pNum>p)
     stop("The offSet is illegal!")
+  #for test
+  set.seed(120)
   
   #generate design matrix x
   m=sum(groupInfo)
@@ -123,9 +125,11 @@ GenerateDummyData=function(n,groupInfo,validGroupNum,errorSigma=1,offSet=0)
     start=sum(groupInfo[1:offSet])+1
     end=sum(groupInfo[1:(offSet+pNum)])
   }
-  beta[start:end]=1
+  beta[start:end]=2
   
   #generate y
+ 
+ # x[,1]=0
   if(errorSigma==0)
   {
     error=rep(0,n)

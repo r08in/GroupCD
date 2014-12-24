@@ -152,19 +152,42 @@ validGroupNumInfo=rep(1,m)
 GenerateDummyModel(sizeInfo,groupInfo,validGroupNumInfo,offSet=c(0,1))
 
 ##########################
-m=4
+dataSetNum=4
 p=60
-sizeInfo=rep(50,4)
-groupInfo=rep(3,p)
-validGroupNumInfo=rep(5,m)
-out=GenerateDummyModel(sizeInfo,groupInfo,validGroupNumInfo,errorSigma=0.5)
+pNum=10
+groupSize=5
+n=120  #data size for each dataset
+sizeInfo=rep(n,dataSetNum)
+groupInfo=rep(groupSize,p)
+validGroupNumInfo=rep(pNum,dataSetNum)
+out=GenerateDummyModel(sizeInfo,groupInfo,validGroupNumInfo,errorSigma=1)
 nlambda=300
 res=gcdreg(out$x,out$y,groupInfo,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
-final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=0.9)
-plot(final$res$lambda[10:(nlambda-10)],final$res$BIC[10:(nlambda-10)],main='BIC-lambda')
+final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=1)
+start=1
+end=nlambda-15
+plot(final$res$lambda[start:end],final$res$BIC[start:end],main='BIC-lambda')
 x11()
-plot(final$res$lambda[10:(nlambda-10)],final$res$df[10:(nlambda-10)],main='df-bambda')
+plot(final$res$lambda[start:end],final$res$df[start:end],main='df-lambda')
 betas=res$beta
 beta=final$beta
 (beta!=0)+0
 
+#test data for dataset note:the result is weird
+dataSetNum=4
+p=2
+pNum=1
+groupSize=2
+n=5  #data size for each dataset
+
+
+#Real dada analysis
+lst=list(HIVDAT1APV$X[1,],HIVDAT2ATV$X[1,],HIVDAT3IDV$X[1,],HIVDAT4LPV$X[1,],
+         HIVDAT5NFV$X[1,],HIVDAT6RTV$X[1,],HIVDAT7SQV$X[1,])
+#lst=list(HIVDAT1APV$X,HIVDAT2ATV$X,HIVDAT3IDV$X,HIVDAT4LPV$X,
+     #    HIVDAT5NFV$X,HIVDAT6RTV$X,HIVDAT7SQV$X)
+res=FindCommonFeature(lst)
+
+##
+lst=list(HIVDAT1APV$X[1:5,1:5],HIVDAT2ATV$X[1:5,1:5],HIVDAT3IDV$X[1:5,1:5],HIVDAT4LPV$X[1:5,1:5],
+         HIVDAT5NFV$X[1:5,1:5],HIVDAT6RTV$X[1:5,1:5],HIVDAT7SQV$X[1:5,1:5])

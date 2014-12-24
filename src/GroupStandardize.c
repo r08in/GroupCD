@@ -51,9 +51,20 @@ SEXP GroupStandardize(SEXP X_,SEXP Y_) {
       s[j] += pow(X[j*n+i], 2);
     }
     s[j] = sqrt(s[j]/n);
-    for (int i=0; i<n; i++)
+    if(s[j]!=0)
+    {      
+
+      for (int i=0; i<n; i++)
+      {
+        XX[j*n+i] = X[j*n+i]/s[j];
+      }
+    }
+    else
     {
-      XX[j*n+i] = X[j*n+i]/s[j];
+      for (int i=0; i<n; i++)
+      {
+        XX[j*n+i] =0;
+      }
     }
   }
   

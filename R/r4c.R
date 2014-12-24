@@ -13,7 +13,11 @@ GroupStandardize2=function(x,y)
   for(i in 1: p)
   {
     scale[i]=sqrt(x[,i]%*%x[,i]/n)
-    tempx[,i]=x[,i]/scale[i]
+    if(scale[i]!=0)
+    {
+      tempx[,i]=x[,i]/scale[i]
+    }
+    
   }
 
   ## Return list
