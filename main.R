@@ -182,12 +182,19 @@ n=5  #data size for each dataset
 
 
 #Real dada analysis
-lst=list(HIVDAT1APV$X[1,],HIVDAT2ATV$X[1,],HIVDAT3IDV$X[1,],HIVDAT4LPV$X[1,],
-         HIVDAT5NFV$X[1,],HIVDAT6RTV$X[1,],HIVDAT7SQV$X[1,])
-#lst=list(HIVDAT1APV$X,HIVDAT2ATV$X,HIVDAT3IDV$X,HIVDAT4LPV$X,
-     #    HIVDAT5NFV$X,HIVDAT6RTV$X,HIVDAT7SQV$X)
-res=FindCommonFeature(lst)
+start=20:25
+end=20:30
+xlst=list(HIVDAT1APV$X[start,end],HIVDAT2ATV$X[start,end],HIVDAT3IDV$X[start,end],HIVDAT4LPV$X[start,end],
+         HIVDAT5NFV$X[start,end],HIVDAT6RTV$X[start,end],HIVDAT7SQV$X[start,end])
+ylst=list(HIVDAT1APV$Y[start],HIVDAT2ATV$Y[start],HIVDAT3IDV$Y[start],HIVDAT4LPV$Y[start],
+          HIVDAT5NFV$Y[start],HIVDAT6RTV$Y[start],HIVDAT7SQV$Y[start])
+xxlst=FindCommonFeature(xlst)
+res=CentralizeMultiData(xxlst,ylst)
 
 ##
-lst=list(HIVDAT1APV$X[1:5,1:5],HIVDAT2ATV$X[1:5,1:5],HIVDAT3IDV$X[1:5,1:5],HIVDAT4LPV$X[1:5,1:5],
-         HIVDAT5NFV$X[1:5,1:5],HIVDAT6RTV$X[1:5,1:5],HIVDAT7SQV$X[1:5,1:5])
+xlst=list(HIVDAT1APV$X,HIVDAT2ATV$X,HIVDAT3IDV$X,HIVDAT4LPV$X,
+    HIVDAT5NFV$X,HIVDAT6RTV$X,HIVDAT7SQV$X)
+ylst=list(HIVDAT1APV$Y,HIVDAT2ATV$Y,HIVDAT3IDV$Y,HIVDAT4LPV$Y,
+         HIVDAT5NFV$Y,HIVDAT6RTV$Y,HIVDAT7SQV$Y)
+xxlst=FindCommonFeature(xlst)
+res=CentralizeMultiData(xxlst,ylst)

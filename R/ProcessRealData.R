@@ -65,3 +65,101 @@ FindCommonFeature=function(lst)
   }
   x
 }
+
+
+##find the common row for each design matrix x and centralize the data
+CentralizeMultiData=function(xlst,ylst)
+{
+  #arrage design matrix xlst
+  m=length(xlst)
+  xxlst=NULL
+  for(i in 1:m)
+  {
+    xxlst=c(xxlst, list(xlst[[i]][do.call(order,as.list(as.data.frame(xlst[[i]]))),]))
+  }
+  
+  #find minimun dataset as target  
+  #target=xxlst[[1]]
+  index=1
+  rowNum=dim(xxlst[[1]])[1]
+  rows=rowNum
+  for(i in 2:m)
+  {
+    r=dim(xxlst[[i]])[1]
+    rows=c(rows,r) #find the row num for each dataset
+    if(rowNum>r)
+    {
+      rowNum=r
+      #target=xxlst[[i]]
+      index=i
+    }
+    
+  }
+  
+  cur=rep(1,m)
+  #find the most common row for each dataset
+  #comRow=NULL
+  comRowIndex=0
+  comTime=0
+  preRow=NULL
+  for(i in 1:rowNum)
+  {
+    if(!is.null(preRow)&&all((preRow)==(xxlst[[index]][i,]))) next
+    preRow=xxlst[[index]][i,]
+    iTime=rowNum  # the common times for row i, initialed as maximun
+    for(k in 1:m)
+    {
+      kTime=0 #the common times of dataset k
+      while((cur[k]<=rows[k])&&paste(as.matrix(xxlst[[k]][cur[k],]),collapse="")<paste(as.matrix(xxlst[[index]][i,]),collapse=""))
+      {
+        cur[k]=cur[k]+1
+      }
+      while((cur[k]<=rows[k])&&all(as.matrix(xxlst[[k]][cur[k],])==as.matrix((xxlst[[index]][i,]))))
+      {
+        cur[k]=cur[k]+1
+        kTime=kTime+1
+      }
+      
+      if(iTime>kTime)
+      {
+        iTime=kTime
+      }
+      if(iTime==0)
+      {
+        break;
+      }
+    }
+    if(comTime<iTime)
+    {
+      comTime=iTime
+      #comRow=xxlst[[index]][i,]
+      comRowIndex=i
+    }
+    
+  }
+  
+  #centralize dataset respectively
+  y=NULL
+  for(i in 1:m)
+  {
+    num=0
+    sum=0
+    for(j in 1:rows[i])
+    {
+      if(all(as.matrix(xlst[[i]][j,])==as.matrix(xxlst[[index]][comRowIndex,])))
+      {
+        num=num+1
+        sum=sum+ylst[[i]][j]
+      }
+    }
+    y=c(y,ylst[[i]]-sum/num)
+  }
+  #return
+  x=xlst[[1]]
+  for(i in 2:m)
+  {
+    x=rbind(x,xlst[[i]])
+  }
+  
+  list(y=y,x=x,info=rows,standard=xxlst[[index]][comRowIndex,],datasetIndex=index,comRowIndex=comRowIndex,comTime=comTime)
+}
