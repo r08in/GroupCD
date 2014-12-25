@@ -104,8 +104,8 @@ CentralizeMultiData=function(xlst,ylst)
   preRow=NULL
   for(i in 1:rowNum)
   {
-    if(!is.null(preRow)&&all((preRow)==(xxlst[[index]][i,]))) next
-    preRow=xxlst[[index]][i,]
+    if(!is.null(preRow)&&all((preRow)==as.matrix((xxlst[[index]][i,])))) next
+    preRow=as.matrix(xxlst[[index]][i,])
     iTime=rowNum  # the common times for row i, initialed as maximun
     for(k in 1:m)
     {
@@ -160,6 +160,71 @@ CentralizeMultiData=function(xlst,ylst)
   {
     x=rbind(x,xlst[[i]])
   }
+  row.names(x)<-1:dim(x)[1]
+  list(y=y,x=x,sizeInfo=rows,standard=as.matrix(xxlst[[index]][comRowIndex,]),datasetIndex=index,comRowIndex=comRowIndex,comTime=comTime)
+}
+
+
+##encode design matrix
+EncodeDesignMatrix=function(x,standard)
+{
+  #data initial 
+  p=dim(x)[2]
+  n=dim(x)[1]
   
-  list(y=y,x=x,info=rows,standard=xxlst[[index]][comRowIndex,],datasetIndex=index,comRowIndex=comRowIndex,comTime=comTime)
+  #find the levels list of x
+  lx=sapply(droplevels(x),levels)
+  
+  #create encoding table
+  tEncode=NULL
+  for(j in 1:p)
+  {
+    temp=NULL
+    num=length(lx[[j]])
+    label=0:(num-1)
+    for(i in 1:num)
+    {
+      if(lx[[j]][i]==standard[j]) break;
+    }
+    label[1]=label[i]
+    label[i]=0
+    temp=as.list(label)
+    names(temp)=lx[[j]]
+    tEncode=c(tEncode,list(temp))
+  }
+  
+  #encode design matrix
+  xx=NULL
+  for(j in 1:p)
+  {
+    xj=NULL
+    num=length(lx[[j]])
+    for(i in 1:n)
+    {
+      tempx=rep(0,num-1)
+      v=as.numeric(tEncode[[j]][as.character(x[i,j])])
+      if(v!=0)
+      {
+        tempx[v]=1
+      }
+      xj=rbind(xj,tempx)
+    }
+    xx=cbind(xx,xj)
+  }
+  
+  #return
+  row.names(xx)<-1:n
+  groupInfo=sapply(lx,length)-1
+  list(x=xx,groupInfo=groupInfo)
+}
+
+
+#prepare linear mode
+PrepareLM=function(xlst,ylst)
+{
+  xxlst=FindCommonFeature(xlst)
+  res0=CentralizeMultiData(xxlst,ylst)
+  out0=EncodeDesignMatrix(res0$x,res0$standard)
+  out=CombineDataset(out0$x,res0$sizeInfo,out0$groupInfo,res0$y)
+  list(x=out$x,y=out$y,groupInfo=(out0$groupInfo*length(xlst)))
 }

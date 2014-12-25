@@ -154,7 +154,7 @@ GenerateDummyModel(sizeInfo,groupInfo,validGroupNumInfo,offSet=c(0,1))
 ##########################
 dataSetNum=4
 p=60
-pNum=10
+pNum=5
 groupSize=5
 n=120  #data size for each dataset
 sizeInfo=rep(n,dataSetNum)
@@ -162,8 +162,8 @@ groupInfo=rep(groupSize,p)
 validGroupNumInfo=rep(pNum,dataSetNum)
 out=GenerateDummyModel(sizeInfo,groupInfo,validGroupNumInfo,errorSigma=1)
 nlambda=300
-res=gcdreg(out$x,out$y,groupInfo,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
-final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=1)
+res=gcdreg(out$x,out$y,groupInfo*dataSetNum,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
+final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=0.95)
 start=1
 end=nlambda-15
 plot(final$res$lambda[start:end],final$res$BIC[start:end],main='BIC-lambda')
@@ -182,19 +182,54 @@ n=5  #data size for each dataset
 
 
 #Real dada analysis
-start=20:25
-end=20:30
+start=40:45
+end=5:10
 xlst=list(HIVDAT1APV$X[start,end],HIVDAT2ATV$X[start,end],HIVDAT3IDV$X[start,end],HIVDAT4LPV$X[start,end],
          HIVDAT5NFV$X[start,end],HIVDAT6RTV$X[start,end],HIVDAT7SQV$X[start,end])
 ylst=list(HIVDAT1APV$Y[start],HIVDAT2ATV$Y[start],HIVDAT3IDV$Y[start],HIVDAT4LPV$Y[start],
           HIVDAT5NFV$Y[start],HIVDAT6RTV$Y[start],HIVDAT7SQV$Y[start])
 xxlst=FindCommonFeature(xlst)
-res=CentralizeMultiData(xxlst,ylst)
+res0=CentralizeMultiData(xxlst,ylst)
+out0=EncodeDesignMatrix(res$x,res$standard)
+out=CombineDataset(out0$x,res0$sizeInfo,out0$groupInfo,res0$y)
+groupInfo=out0$groupInfo*length(xlst)
+nlambda=300
+res=gcdreg(out$x,out$y,groupInfo,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
+final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=1)
+start=1
+end=nlambda-15
+plot(final$res$lambda[start:end],final$res$BIC[start:end],main='BIC-lambda')
+x11()
+plot(final$res$lambda[start:end],final$res$df[start:end],main='df-lambda')
+betas=res$beta
+beta=final$beta
+(beta!=0)+0
 
 ##
+load('C:/Users/Administrator/Desktop/caspar/data/HIVDAT1APV.rda')
+load('C:/Users/Administrator/Desktop/caspar/data/HIVDAT2ATV.rda')
+load('C:/Users/Administrator/Desktop/caspar/data/HIVDAT3IDV.rda')
+load('C:/Users/Administrator/Desktop/caspar/data/HIVDAT4LPV.rda')
+load('C:/Users/Administrator/Desktop/caspar/data/HIVDAT5NFV.rda')
+load('C:/Users/Administrator/Desktop/caspar/data/HIVDAT6RTV.rda')
+load('C:/Users/Administrator/Desktop/caspar/data/HIVDAT7SQV.rda')
 xlst=list(HIVDAT1APV$X,HIVDAT2ATV$X,HIVDAT3IDV$X,HIVDAT4LPV$X,
-    HIVDAT5NFV$X,HIVDAT6RTV$X,HIVDAT7SQV$X)
+          HIVDAT5NFV$X,HIVDAT6RTV$X,HIVDAT7SQV$X)
 ylst=list(HIVDAT1APV$Y,HIVDAT2ATV$Y,HIVDAT3IDV$Y,HIVDAT4LPV$Y,
-         HIVDAT5NFV$Y,HIVDAT6RTV$Y,HIVDAT7SQV$Y)
-xxlst=FindCommonFeature(xlst)
-res=CentralizeMultiData(xxlst,ylst)
+          HIVDAT5NFV$Y,HIVDAT6RTV$Y,HIVDAT7SQV$Y)
+out=PrepareLM(xlst,ylst)
+#save(out,file = "out.rda")
+#load("out.rda")
+nlambda=300
+res=gcdreg(out$x,out$y,out$groupInfo,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
+final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=1)
+start=1
+end=nlambda-15
+plot(final$res$lambda[start:end],final$res$BIC[start:end],main='BIC-lambda')
+x11()
+plot(final$res$lambda[start:end],final$res$df[start:end],main='df-lambda')
+betas=res$beta
+beta=final$beta
+(beta!=0)+0
+SelectGroup(beta,out$groupInfo)
+

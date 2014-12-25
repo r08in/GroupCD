@@ -70,3 +70,26 @@ gcdreg=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lambda,nl
                    class = "gcdreg")
   val
 }
+
+SelectGroup=function(beta,groupInfo)
+{
+  b=(beta!=0)+0
+  selectedGroup=groupInfo
+  p=length(groupInfo)
+  start=0
+  end=0
+  for(j in 1:p)
+  {
+    start=end+1
+    end=end+groupInfo[j]
+    if(sum(b[start:end])!=0)
+    {
+      selectedGroup[j]=sum(b[start:end])
+    }
+    else
+    {
+      selectedGroup[j]=0
+    }
+  }
+  selectedGroup[selectedGroup!=0]
+}
