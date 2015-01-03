@@ -56,7 +56,7 @@ gcdreg=function (x,y,groupInfo,penalty=c("MCP", "SCAD", "lasso"),gamma,lambda,nl
   
   ##unstandardize
   beta<-matrix(0,m,nlambda)
-  beta<-b*scale
+  beta<-b%*%diag(ifelse(scale==0,0,1/scale))
  
   ##output
   val <- structure(list(beta = beta,

@@ -1,6 +1,10 @@
 ##Generate random data from mvn for linear model
+
 #Generate multi-dataset. each one is in linear model
-GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=1,offSet=0)
+# r paramter of variance in generating X matrix
+# errorSigma variance of ramdom error
+# offSet indicate the offset of position of non-zero beta
+GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=1,offSet=0,outlier.op="NONE",outlier.pro=0.1,outlier.r=10)
 {
   #for test
   set.seed(120)
@@ -12,6 +16,8 @@ GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=1,offSet=0)
     stop("p cannot be smaller than pNum.")  
   if(dataSetNum<=0)
     stop("dataSetNum should be positive integer.")
+  if(outlier.op!="NONE"&&(outlier.pro>1||outlier.pro<0))
+    stop("the proportion of outlier is illegal!")
   ##generate design matrix x 
   #normal parameter for design matrix
   mu = rep(0,p)
@@ -51,6 +57,15 @@ GenerateData = function (n,p,pNum,dataSetNum=1,r=0.9,errorSigma=1,offSet=0)
     else
     {
       error=rnorm(n,0,errorSigma);
+    }
+    if(outlier.op!="NONE") #generate outliers
+    {
+      oNum=round(n*outlier.pro)
+      if(outlier.op=="MEANSHIFT")
+      {
+        shift=c(rep(outlier.r,oNum),rep(0,n-oNum))
+        error=error+shift
+      }
     }
     tempy[j,]=tempx[j,,]%*%tempBeta[j,]+error
   }

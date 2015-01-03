@@ -1,12 +1,12 @@
 ##This is a test  
 library("MASS") #try to use onevent later
-n=41 
-p=282  
+n=100 
+p=200  
 pNum=5
 dataSetNum=6
 nlambda=300
 groupInfo=rep(dataSetNum,p)
-data=GenerateData(n,p,pNum,dataSetNum,errorSigma=1)
+data=GenerateData(n,p,pNum,dataSetNum,errorSigma=1,outlier.op="MEANSHIFT")#outlier.op="MEANSHIFT"
 out=CombineMultiLm(data$x,data$y)
 res=gcdreg(out$x,out$y,groupInfo,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
 #res=gcdreg2(out$x,out$y,groupInfo,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
@@ -152,18 +152,19 @@ validGroupNumInfo=rep(1,m)
 GenerateDummyModel(sizeInfo,groupInfo,validGroupNumInfo,offSet=c(0,1))
 
 ##########################
-dataSetNum=4
-p=60
-pNum=5
-groupSize=5
+dataSetNum=7
+p=64
+pNum=7
+groupSize=4
 n=120  #data size for each dataset
 sizeInfo=rep(n,dataSetNum)
 groupInfo=rep(groupSize,p)
 validGroupNumInfo=rep(pNum,dataSetNum)
 out=GenerateDummyModel(sizeInfo,groupInfo,validGroupNumInfo,errorSigma=1)
 nlambda=300
+
 res=gcdreg(out$x,out$y,groupInfo*dataSetNum,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
-final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=0.95)
+final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=0.90)
 start=1
 end=nlambda-15
 plot(final$res$lambda[start:end],final$res$BIC[start:end],main='BIC-lambda')
@@ -180,6 +181,11 @@ pNum=1
 groupSize=2
 n=5  #data size for each dataset
 
+dataSetNum=4   #the case BIC fail to select
+p=60
+pNum=4
+groupSize=5
+n=120  #data size for each dataset
 
 #Real dada analysis
 start=40:45
@@ -206,6 +212,10 @@ beta=final$beta
 (beta!=0)+0
 
 ##
+logTransform=function(y)
+{
+  log(ifelse(y==0,0.0001,y))
+}
 load('C:/Users/Administrator/Desktop/caspar/data/HIVDAT1APV.rda')
 load('C:/Users/Administrator/Desktop/caspar/data/HIVDAT2ATV.rda')
 load('C:/Users/Administrator/Desktop/caspar/data/HIVDAT3IDV.rda')
@@ -217,9 +227,14 @@ xlst=list(HIVDAT1APV$X,HIVDAT2ATV$X,HIVDAT3IDV$X,HIVDAT4LPV$X,
           HIVDAT5NFV$X,HIVDAT6RTV$X,HIVDAT7SQV$X)
 ylst=list(HIVDAT1APV$Y,HIVDAT2ATV$Y,HIVDAT3IDV$Y,HIVDAT4LPV$Y,
           HIVDAT5NFV$Y,HIVDAT6RTV$Y,HIVDAT7SQV$Y)
+log_ylst=lapply(ylst,logTransform)
+
+log_out=PrepareLM(xlst,log_ylst)
 out=PrepareLM(xlst,ylst)
-#save(out,file = "out.rda")
-#load("out.rda")
+save(log_out,file="log_out.rda")
+save(out,file = "out.rda")
+load("out.rda")
+out=log_out
 nlambda=300
 res=gcdreg(out$x,out$y,out$groupInfo,penalty="MCP",gamma=3,nlambda=nlambda,delta=0.000001,maxIter=1000)
 final=BICSelect2(res$loss,res$n,res$beta,res$lambda,inv=1)
@@ -231,5 +246,5 @@ plot(final$res$lambda[start:end],final$res$df[start:end],main='df-lambda')
 betas=res$beta
 beta=final$beta
 (beta!=0)+0
-SelectGroup(beta,out$groupInfo)
+finalGroup=SelectGroup(beta,out$groupInfo)
 
